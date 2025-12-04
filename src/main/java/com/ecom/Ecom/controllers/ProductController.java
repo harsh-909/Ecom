@@ -6,6 +6,8 @@ import com.ecom.Ecom.exception.fakeStoreProductNotFoundException;
 import com.ecom.Ecom.models.Product;
 import com.ecom.Ecom.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -44,21 +46,22 @@ public class ProductController {
         return productService.getSingleProduct(id);
     }
 
-    @PatchMapping
-    public Product partialUpdateProduct(@RequestBody Product product){
-        product.setDescription("Partially product updated");
-        return product;
+    @PatchMapping("/{id}")
+    public ResponseEntity<Product> partialUpdateProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return new ResponseEntity<Product>(
+                productService.partialUpdateProduct(id,product), HttpStatus.OK);
     }
 
-    @PutMapping
-    public Product fullUpdateProduct(@RequestBody Product product){
-        product.setDescription("Fully product updated");
-        return product;
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return new ResponseEntity<Product>(
+                productService.replaceProduct(id,product), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAProduct(@PathVariable("id") Long id){
-
+    public ResponseEntity<Void> deleteAProduct(@PathVariable("id") Long id){
+        productService.deleteAProduct(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 }

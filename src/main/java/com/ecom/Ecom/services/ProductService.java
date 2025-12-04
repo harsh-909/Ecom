@@ -18,4 +18,8 @@ public interface ProductService {
     public Product addSingleProduct(FakeStoreProductDto productDTO);
 
     public Product replaceProduct(Long id, Product product);
+
+    public Product partialUpdateProduct(Long id, Product product);
+
+    public void deleteAProduct(Long id);
 }
