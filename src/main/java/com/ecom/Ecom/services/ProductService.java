@@ -1,7 +1,7 @@
 package com.ecom.Ecom.services;
 
 import com.ecom.Ecom.dtos.FakeStoreProductDto;
-import com.ecom.Ecom.exception.fakeStoreProductNotFoundException;
+import com.ecom.Ecom.exception.FakeStoreProductNotFoundException;
 import com.ecom.Ecom.models.Product;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProductService {
 
 
-    public Product getSingleProduct(Long id) throws fakeStoreProductNotFoundException;
+    public Product getSingleProduct(Long id) throws FakeStoreProductNotFoundException;
 
     public List<Product> getAllProducts() ;
 

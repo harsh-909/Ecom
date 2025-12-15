@@ -2,7 +2,8 @@ package com.ecom.Ecom.controllers;
 
 
 import com.ecom.Ecom.dtos.FakeStoreProductDto;
-import com.ecom.Ecom.exception.fakeStoreProductNotFoundException;
+import com.ecom.Ecom.exception.FakeStoreProductNotFoundException;
+import com.ecom.Ecom.exceptionDtos.ExceptionDto;
 import com.ecom.Ecom.models.Product;
 import com.ecom.Ecom.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getSingleProduct(@PathVariable("id") Long id) throws fakeStoreProductNotFoundException {
+    public Product getSingleProduct(@PathVariable("id") Long id) throws FakeStoreProductNotFoundException {
         return productService.getSingleProduct(id);
     }
 
@@ -63,5 +63,12 @@ public class ProductController {
         productService.deleteAProduct(id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+
+//    @ExceptionHandler(FakeStoreProductNotFoundException.class)
+//    public ResponseEntity<ExceptionDto> handleProductNotFoundException(FakeStoreProductNotFoundException exception){
+//        ExceptionDto exceptionDto = new ExceptionDto();
+//        exceptionDto.setMessage(exception.getMessage());
+//        return new ResponseEntity<>(exceptionDto,HttpStatus.NOT_FOUND);
+//    }
 
 }

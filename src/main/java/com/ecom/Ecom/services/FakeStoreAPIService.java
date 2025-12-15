@@ -1,22 +1,18 @@
 package com.ecom.Ecom.services;
 
 import com.ecom.Ecom.dtos.FakeStoreProductDto;
-import com.ecom.Ecom.exception.fakeStoreProductNotFoundException;
+import com.ecom.Ecom.exception.FakeStoreProductNotFoundException;
 import com.ecom.Ecom.models.Category;
 import com.ecom.Ecom.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 @Service
 public class FakeStoreAPIService implements ProductService {
@@ -41,7 +37,7 @@ public class FakeStoreAPIService implements ProductService {
     }
 
     @Override
-    public Product getSingleProduct(Long id) throws fakeStoreProductNotFoundException {
+    public Product getSingleProduct(Long id) throws FakeStoreProductNotFoundException {
 
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(
                 "https://fakestoreapi.com/products/" + id,
@@ -49,7 +45,7 @@ public class FakeStoreAPIService implements ProductService {
         );
 
         if(fakeStoreProductDto == null){
-            throw new fakeStoreProductNotFoundException("Fake Store Product Not found");
+            throw new FakeStoreProductNotFoundException("Fake Store Product Not found");
         }
         return convertToFakeStoreProduct(fakeStoreProductDto);
     }
