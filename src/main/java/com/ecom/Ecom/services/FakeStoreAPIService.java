@@ -1,9 +1,11 @@
 package com.ecom.Ecom.services;
 
+import com.ecom.Ecom.commonUtils.ProductServiceManager;
 import com.ecom.Ecom.dtos.FakeStoreProductDto;
 import com.ecom.Ecom.exception.FakeStoreProductNotFoundException;
 import com.ecom.Ecom.models.Category;
 import com.ecom.Ecom.models.Product;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -13,31 +15,21 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("fakeStoreProductService")
 public class FakeStoreAPIService implements ProductService {
 
     private final RestTemplate restTemplate;
+    private ProductServiceManager productServiceManager;
 
     @Autowired
     public FakeStoreAPIService(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
     }
 
-    Product convertToFakeStoreProduct(FakeStoreProductDto fakeStoreProductDto){
-        Product product = new Product();
-
-        if(fakeStoreProductDto.getId() != null) product.setId(fakeStoreProductDto.getId());
-        if(fakeStoreProductDto.getTitle() != null) product.setTitle(fakeStoreProductDto.getTitle());
-        if(fakeStoreProductDto.getDescription() != null) product.setDescription(fakeStoreProductDto.getDescription());
-        if(fakeStoreProductDto.getCategory() != null) product.setCategory(new Category());
-        if(fakeStoreProductDto.getCategory() != null) product.getCategory().setCatName(fakeStoreProductDto.getCategory());
-        if(fakeStoreProductDto.getImage() != null) product.setImageURL(fakeStoreProductDto.getImage());
-        return product;
-    }
-
     @Override
-    public Product getSingleProduct(Long id) throws FakeStoreProductNotFoundException {
+    public @NonNull Optional<Product> getSingleProduct(Long id) throws FakeStoreProductNotFoundException {
 
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(
                 "https://fakestoreapi.com/products/" + id,
@@ -47,7 +39,7 @@ public class FakeStoreAPIService implements ProductService {
         if(fakeStoreProductDto == null){
             throw new FakeStoreProductNotFoundException("Fake Store Product Not found");
         }
-        return convertToFakeStoreProduct(fakeStoreProductDto);
+        return Optional.ofNullable(productServiceManager.convertDtoToProduct(fakeStoreProductDto));
     }
 
     @Override
@@ -61,7 +53,7 @@ public class FakeStoreAPIService implements ProductService {
         if(allFakeStoreProductDtos == null) return productList;
 
         for(FakeStoreProductDto dto : allFakeStoreProductDtos){
-            productList.add(convertToFakeStoreProduct(dto));
+            productList.add(productServiceManager.convertDtoToProduct(dto));
         }
         return productList;
     }
@@ -73,7 +65,7 @@ public class FakeStoreAPIService implements ProductService {
                 productDTO,
                 FakeStoreProductDto.class
         );
-        return convertToFakeStoreProduct(productDTO);
+        return productServiceManager.convertDtoToProduct(productDTO);
     }
 
     @Override
@@ -89,7 +81,7 @@ public class FakeStoreAPIService implements ProductService {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreProductDto, FakeStoreProductDto.class);
         HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,restTemplate.getMessageConverters());
         FakeStoreProductDto response =  restTemplate.execute("https://fakestoreapi.com/products", HttpMethod.PUT, requestCallback, responseExtractor);
-        return convertToFakeStoreProduct(response);
+        return productServiceManager.convertDtoToProduct(response);
     }
 
     @Override
@@ -105,7 +97,7 @@ public class FakeStoreAPIService implements ProductService {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreProductDto, FakeStoreProductDto.class);
         HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,restTemplate.getMessageConverters());
         FakeStoreProductDto response =  restTemplate.execute("https://fakestoreapi.com/products", HttpMethod.PUT, requestCallback, responseExtractor);
-        return convertToFakeStoreProduct(response);
+        return productServiceManager.convertDtoToProduct(response);
     }
 
     @Override
